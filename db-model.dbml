@@ -1,0 +1,178 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+Enum role {
+  admin
+  instructor
+  super_admin
+  user
+}
+
+Enum approved_by {
+  NBCC
+  APA
+  ASWB
+  NAADAC
+  CAMFT
+  Nursing
+}
+
+Enum license_type {
+  counseling
+  social_work
+  nursing
+  addiction_counselor
+  psychology
+  physician
+  peer_support
+}
+
+Enum question_type {
+  "True/False"
+  "Multiple Choice"
+  "All That Apply"
+}
+
+Enum track_assignment_status {
+  not_started
+  in_progress
+  completed
+  overdue
+}
+
+Table users {
+  id text [primary key]
+  first_name varchar [not null]
+  last_name varchar [not null]
+  email varchar [not null]
+  password text [not null]
+  organization_id text
+  license_type license_type
+  created_at date [not null, default: `now()`] 
+  updated_at date [not null, default: `now()`]
+  role role [not null]
+  job_role_id text
+}
+
+Table job_roles {
+  id text [primary key]
+  name text [not null]
+  organization_id text [not null]
+}
+
+Table courses {
+  id text [primary key]
+  title text [not null]
+  description text [not null]
+  instructor_id text [not null]
+  premium bool [not null]
+  passing_score int
+  approved_by approved_by
+  image_url text
+  ce_hours int
+  quiz_title text
+}
+
+Table learning_objectives {
+  id text [primary key]
+  course_id text [not null]
+  objective text [not null]
+}
+
+
+Table modules {
+  id text [primary key]
+  course_id text [not null]
+  heading text [not null]
+}
+
+// new
+Table module_progress {
+  id text [primary key]
+  module_id text [not null]
+  user_id text [not null]
+  start_module date [not null, default: `now()`]
+  end_module date
+}
+
+Table questions {
+  id text [primary key]
+  course_id text [not null]
+  order int [not null]
+  question_text text [not null]
+  question_type question_type [not null]
+  correct_option_id text [not null]
+  explanation text [not null]
+}
+
+Table options {
+  id text [primary key]
+  question_id text [not null]
+  option text [not null]
+}
+
+// new 
+Table assigned_courses {
+  id text [primary key]
+  course_id text [not null]
+  user_id text [not null]
+  organization_id text [not null]
+  assigned_date date [not null, default: `now()`]
+  completed_at date 
+}
+
+Table organizations {
+  id text [primary key]
+  name text [not null]
+  created_at date [not null, default: `now()`]
+}
+
+Table tracks {
+  id text [primary key]
+  name text [not null]
+  description text [not null]
+  organization_id text [not null]
+  compliance_cycle date  [not null]
+  // deadline?
+  updated_at date [not null, default: `now()`]
+  updated_by text [not null]
+  is_mandatory bool [not null]
+}
+
+Table tracks_assignments {
+  id text [primary key]
+  user_id text [not null]
+  track_id text [not null]
+  assigned_by text [not null]
+  assigned_at date [not null, default: `now()`]
+}
+
+//removed some fields
+Table verified_users {
+  id text [primary key]
+  email text [not null]
+  organization_id text [not null]
+  invited_at date [not null, default: `now()`]
+}
+
+
+
+Ref: courses.instructor_id > users.id // many-to-one
+Ref: modules.course_id > courses.id // many - to - one
+Ref: learning_objectives.course_id > courses.id
+Ref: questions.course_id > courses.id
+Ref: options.question_id > questions.id
+// new
+Ref: job_roles.organization_id > organizations.id
+Ref: users.job_role_id > job_roles.id
+Ref: module_progress.module_id > modules.id
+Ref: module_progress.module_id > users.id
+Ref: assigned_courses.course_id > courses.id
+Ref: assigned_courses.user_id > users.id
+Ref: assigned_courses.organization_id > organizations.id
+Ref: users.organization_id > organizations.id
+Ref: tracks.organization_id > organizations.id
+Ref: tracks.updated_by > users.id
+Ref: verified_users.organization_id > organizations.id
+Ref: tracks_assignments.user_id > users.id
+Ref: tracks_assignments.assigned_by > users.id
+Ref: tracks_assignments.track_id > tracks.id

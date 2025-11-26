@@ -5,6 +5,7 @@ import {
     integer,
     pgEnum,
     date,
+    uuid,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { sql } from "drizzle-orm";
@@ -51,7 +52,7 @@ export const trackAssignmentStatusEnum = pgEnum("track_assignment_status", [
 
 // Tables
 export const usersTable = pgTable("users", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
     email: text("email").notNull(),
@@ -70,7 +71,7 @@ export const usersTable = pgTable("users", {
 });
 
 export const coursesTable = pgTable("courses", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
     description: text("description").notNull(),
     instructorId: text("instructor_id")
@@ -85,7 +86,7 @@ export const coursesTable = pgTable("courses", {
 });
 
 export const learningObjectivesTable = pgTable("learning_objectives", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     courseId: text("course_id")
         .notNull()
         .references(() => coursesTable.id),
@@ -93,7 +94,7 @@ export const learningObjectivesTable = pgTable("learning_objectives", {
 });
 
 export const modulesTable = pgTable("modules", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     courseId: text("course_id")
         .notNull()
         .references(() => coursesTable.id),
@@ -101,7 +102,7 @@ export const modulesTable = pgTable("modules", {
 });
 
 export const questionsTable = pgTable("questions", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     courseId: text("course_id")
         .notNull()
         .references(() => coursesTable.id),
@@ -113,7 +114,7 @@ export const questionsTable = pgTable("questions", {
 });
 
 export const optionsTable = pgTable("options", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     questionId: text("question_id")
         .notNull()
         .references(() => questionsTable.id),
@@ -121,13 +122,13 @@ export const optionsTable = pgTable("options", {
 });
 
 export const organizationsTable = pgTable("organizations", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     createdAt: date("created_at").notNull().defaultNow(),
 });
 
 export const jobRolesTable = pgTable("job_roles", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     organizationId: text("organization_id")
         .notNull()
@@ -135,7 +136,7 @@ export const jobRolesTable = pgTable("job_roles", {
 });
 
 export const moduleProgressTable = pgTable("module_progress", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     moduleId: text("module_id")
         .notNull()
         .references(() => modulesTable.id),
@@ -147,7 +148,7 @@ export const moduleProgressTable = pgTable("module_progress", {
 });
 
 export const assignedCoursesTable = pgTable("assigned_courses", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     courseId: text("course_id")
         .notNull()
         .references(() => coursesTable.id),
@@ -162,7 +163,7 @@ export const assignedCoursesTable = pgTable("assigned_courses", {
 });
 
 export const tracksTable = pgTable("tracks", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     description: text("description").notNull(),
     organizationId: text("organization_id")
@@ -180,7 +181,7 @@ export const tracksTable = pgTable("tracks", {
 });
 
 export const tracksAssignmentsTable = pgTable("tracks_assignments", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id")
         .notNull()
         .references(() => usersTable.id),
@@ -194,7 +195,7 @@ export const tracksAssignmentsTable = pgTable("tracks_assignments", {
 });
 
 export const verifiedUsersTable = pgTable("verified_users", {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull(),
     organizationId: text("organization_id")
         .notNull()

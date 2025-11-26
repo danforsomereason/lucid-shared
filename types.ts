@@ -17,13 +17,13 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Users
-export const usersInsertSchema = createInsertSchema(usersTable);
-export type UserInsert = z.infer<typeof usersInsertSchema>;
-export const usersSelectSchema = createSelectSchema(usersTable, {
+export const userInsertSchema = createInsertSchema(usersTable);
+export type UserInsert = z.infer<typeof userInsertSchema>;
+export const userSchema = createSelectSchema(usersTable, {
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 });
-export type User = z.infer<typeof usersSelectSchema>;
+export type User = z.infer<typeof userSchema>;
 
 // Courses
 export const coursesInsertSchema = createInsertSchema(coursesTable);
@@ -140,7 +140,7 @@ export const verifiedUsersSelectSchema = createSelectSchema(
 export type VerifiedUser = z.infer<typeof verifiedUsersSelectSchema>;
 
 // Endpoint Schemas
-export const registerInputSchema = usersInsertSchema.pick({
+export const registerInputSchema = userInsertSchema.pick({
     firstName: true,
     lastName: true,
     email: true,
@@ -148,3 +148,31 @@ export const registerInputSchema = usersInsertSchema.pick({
     licenseType: true,
 });
 export type RegisterInput = z.infer<typeof registerInputSchema>;
+
+export const registerOutputSchema = userSchema.extend({
+    token: z.string(),
+});
+export type RegisterOutput = z.infer<typeof registerOutputSchema>;
+
+export const loginInputSchema = userInsertSchema.pick({
+    email: true,
+    password: true,
+});
+export type LoginInput = z.infer<typeof loginInputSchema>;
+
+export const loginOutputSchema = userSchema.extend({
+    token: z.string(),
+});
+export type LoginOutput = z.infer<typeof loginOutputSchema>;
+
+export const endpointSchemas = {
+    register: {
+        input: registerInputSchema,
+        output: registerOutputSchema,
+    },
+    login: {
+        input: loginInputSchema,
+        output: loginOutputSchema,
+    },
+};
+export type EndpointSchemas = typeof endpointSchemas;

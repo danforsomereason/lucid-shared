@@ -1,20 +1,44 @@
 {
     "name": "lucid-shared",
     "version": "0.1.0",
-    "main": "index.js",
+    "type": "commonjs",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": {
+                "import": "./dist/index.d.mts",
+                "require": "./dist/index.d.ts"
+            },
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        },
+        "./schema": {
+            "types": {
+                "import": "./dist/schema/index.d.mts",
+                "require": "./dist/schema/index.d.ts"
+            },
+            "import": "./dist/schema/index.mjs",
+            "require": "./dist/schema/index.js"
+        }
+    },
+    "files": [
+        "dist/"
+    ],
     "scripts": {
         "build": "tsup"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/danforsomereason/LucidShared.git"
+        "url": "git+https://github.com/danforsomereason/lucid-shared.git"
     },
     "author": "Dan Hutcheson",
     "license": "UNLICENSED",
     "bugs": {
-        "url": "https://github.com/danforsomereason/LucidShared/issues"
+        "url": "https://github.com/danforsomereason/lucid-shared/issues"
     },
-    "homepage": "https://github.com/danforsomereason/LucidShared#readme",
+    "homepage": "https://github.com/danforsomereason/lucid-shared#readme",
     "description": "",
     "dependencies": {
         "drizzle-orm": "^0.44.7",

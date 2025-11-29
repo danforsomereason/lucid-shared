@@ -13,12 +13,26 @@ import {
     tracksAssignmentsTable,
     verifiedUsersTable,
 } from "./schema";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Users
 export const userInsertSchema = createInsertSchema(usersTable);
 export type UserInsert = z.infer<typeof userInsertSchema>;
+
+// Full user update schema - for admin use
+export const userUpdateSchema = createUpdateSchema(usersTable)
+export type UserUpdate = z.infer<typeof userUpdateSchema>;
+
+// Profile update schema (update your user profile)
+export const userProfileUpdateSchema = userUpdateSchema.pick({
+    firstName: true,
+    lastName: true,
+    licenseType: true
+})
+export type UserProfileUpdate = z.infer<typeof userProfileUpdateSchema>;
+
+
 export const userSchema = createSelectSchema(usersTable, {
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

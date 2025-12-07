@@ -24,15 +24,6 @@ export type UserInsert = z.infer<typeof userInsertSchema>;
 export const userUpdateSchema = createUpdateSchema(usersTable)
 export type UserUpdate = z.infer<typeof userUpdateSchema>;
 
-// Profile update schema (update your user profile)
-export const userProfileUpdateSchema = userUpdateSchema.pick({
-    firstName: true,
-    lastName: true,
-    licenseType: true
-})
-export type UserProfileUpdate = z.infer<typeof userProfileUpdateSchema>;
-
-
 export const userSchema = createSelectSchema(usersTable, {
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
@@ -179,6 +170,18 @@ export const loginOutputSchema = userSchema.extend({
 });
 export type LoginOutput = z.infer<typeof loginOutputSchema>;
 
+// Profile update schema (update your user profile)
+export const userProfileUpdateInputSchema = userUpdateSchema.pick({
+    firstName: true,
+    lastName: true,
+    licenseType: true
+})
+export type UserProfileUpdateInput = z.infer<typeof userProfileUpdateInputSchema>;
+
+export const userProfileUpdateOutputSchema = userSchema;
+export type UserProfileUpdateOutput = z.infer<typeof userProfileUpdateOutputSchema>;
+
+
 export const endpointSchemas = {
     register: {
         input: registerInputSchema,
@@ -188,5 +191,9 @@ export const endpointSchemas = {
         input: loginInputSchema,
         output: loginOutputSchema,
     },
+    userProfileUpdate: {
+        input: userProfileUpdateInputSchema,
+        output: userProfileUpdateOutputSchema,
+    }
 };
 export type EndpointSchemas = typeof endpointSchemas;

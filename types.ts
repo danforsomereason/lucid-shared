@@ -27,7 +27,7 @@ export type UserUpdate = z.infer<typeof userUpdateSchema>;
 export const userSchema = createSelectSchema(usersTable, {
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
-});
+}).extend({createdAt: z.coerce.date()});
 export type User = z.infer<typeof userSchema>;
 
 // Courses

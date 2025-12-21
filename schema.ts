@@ -57,7 +57,7 @@ export const usersTable = pgTable("users", {
     lastName: text("last_name").notNull(),
     email: text("email").notNull(),
     password: text("password").notNull(),
-    organizationId: text("organization_id").references(
+    organizationId: uuid("organization_id").references(
         () => organizationsTable.id
     ),
     licenseType: licenseTypeEnum("license_type"),
@@ -67,14 +67,14 @@ export const usersTable = pgTable("users", {
         .defaultNow()
         .$onUpdate(() => sql`CURRENT_DATE`),
     role: roleEnum("role").notNull(),
-    jobRoleId: text("job_role_id").references(() => jobRolesTable.id),
+    jobRoleId: uuid("job_role_id").references(() => jobRolesTable.id),
 });
 
 export const coursesTable = pgTable("courses", {
     id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
     description: text("description").notNull(),
-    instructorId: text("instructor_id")
+    instructorId: uuid("instructor_id")
         .notNull()
         .references(() => usersTable.id),
     premium: boolean("premium").notNull(),
@@ -87,7 +87,7 @@ export const coursesTable = pgTable("courses", {
 
 export const learningObjectivesTable = pgTable("learning_objectives", {
     id: uuid("id").primaryKey().defaultRandom(),
-    courseId: text("course_id")
+    courseId: uuid("course_id")
         .notNull()
         .references(() => coursesTable.id),
     objective: text("objective").notNull(),
@@ -95,7 +95,7 @@ export const learningObjectivesTable = pgTable("learning_objectives", {
 
 export const modulesTable = pgTable("modules", {
     id: uuid("id").primaryKey().defaultRandom(),
-    courseId: text("course_id")
+    courseId: uuid("course_id")
         .notNull()
         .references(() => coursesTable.id),
     heading: text("heading").notNull(),
@@ -103,19 +103,19 @@ export const modulesTable = pgTable("modules", {
 
 export const questionsTable = pgTable("questions", {
     id: uuid("id").primaryKey().defaultRandom(),
-    courseId: text("course_id")
+    courseId: uuid("course_id")
         .notNull()
         .references(() => coursesTable.id),
     order: integer("order").notNull(),
     questionText: text("question_text").notNull(),
     questionType: questionTypeEnum("question_type").notNull(),
-    correctOptionId: text("correct_option_id").notNull(),
+    correctOptionId: uuid("correct_option_id").notNull(),
     explanation: text("explanation").notNull(),
 });
 
 export const optionsTable = pgTable("options", {
     id: uuid("id").primaryKey().defaultRandom(),
-    questionId: text("question_id")
+    questionId: uuid("question_id")
         .notNull()
         .references(() => questionsTable.id),
     option: text("option").notNull(),
@@ -130,17 +130,17 @@ export const organizationsTable = pgTable("organizations", {
 export const jobRolesTable = pgTable("job_roles", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
-    organizationId: text("organization_id")
+    organizationId: uuid("organization_id")
         .notNull()
         .references(() => organizationsTable.id),
 });
 
 export const moduleProgressTable = pgTable("module_progress", {
     id: uuid("id").primaryKey().defaultRandom(),
-    moduleId: text("module_id")
+    moduleId: uuid("module_id")
         .notNull()
         .references(() => modulesTable.id),
-    userId: text("user_id")
+    userId: uuid("user_id")
         .notNull()
         .references(() => usersTable.id),
     startModule: date("start_module").notNull().defaultNow(),
@@ -149,13 +149,13 @@ export const moduleProgressTable = pgTable("module_progress", {
 
 export const assignedCoursesTable = pgTable("assigned_courses", {
     id: uuid("id").primaryKey().defaultRandom(),
-    courseId: text("course_id")
+    courseId: uuid("course_id")
         .notNull()
         .references(() => coursesTable.id),
-    userId: text("user_id")
+    userId: uuid("user_id")
         .notNull()
         .references(() => usersTable.id),
-    organizationId: text("organization_id")
+    organizationId: uuid("organization_id")
         .notNull()
         .references(() => organizationsTable.id),
     assignedDate: date("assigned_date").notNull().defaultNow(),
@@ -166,7 +166,7 @@ export const tracksTable = pgTable("tracks", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     description: text("description").notNull(),
-    organizationId: text("organization_id")
+    organizationId: uuid("organization_id")
         .notNull()
         .references(() => organizationsTable.id),
     complianceCycle: date("compliance_cycle").notNull(),
@@ -182,10 +182,10 @@ export const tracksTable = pgTable("tracks", {
 
 export const tracksAssignmentsTable = pgTable("tracks_assignments", {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: text("user_id")
+    userId: uuid("user_id")
         .notNull()
         .references(() => usersTable.id),
-    trackId: text("track_id")
+    trackId: uuid("track_id")
         .notNull()
         .references(() => tracksTable.id),
     assignedBy: text("assigned_by")
@@ -197,7 +197,7 @@ export const tracksAssignmentsTable = pgTable("tracks_assignments", {
 export const verifiedUsersTable = pgTable("verified_users", {
     id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull(),
-    organizationId: text("organization_id")
+    organizationId: uuid("organization_id")
         .notNull()
         .references(() => organizationsTable.id),
     invitedAt: date("invited_at").notNull().defaultNow(),
